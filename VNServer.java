@@ -38,6 +38,7 @@ public class VNServer implements Runnable {
 	 */
 	public void endConnection(Connection conn){
 		clients.remove(conn);
+		System.out.println(conn.getPlayerName()+"has disconnected.");
 	}
 
 	public void run() {
