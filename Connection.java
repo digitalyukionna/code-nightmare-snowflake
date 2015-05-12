@@ -12,7 +12,6 @@ public class Connection extends Thread {
 	public Connection(VNServer server, Socket sock){
 		this.server = server;
 		client = sock;
-		
 	}
 	public void run(){
 		try{
@@ -26,6 +25,9 @@ public class Connection extends Thread {
 		while (running){
 			try{
 				input = bReader.readLine();
+				if (input.matches("/quit")){
+					break;
+				}
 			}
 			catch(IOException e){
 				//do nothing;
@@ -40,6 +42,8 @@ public class Connection extends Thread {
 			}
 			
 		}
+		output("Goodbye!");
+		server.endConnection(this);
 		try{
 			bReader.close();
 			pWriter.close();
@@ -48,11 +52,9 @@ public class Connection extends Thread {
 			System.out.println("Problem with closing IO Streams.");
 		}
 	}
-	public void terminate(){
-		running = false;
-	}
+	
 	public void output(String s){
-		System.out.println("out"+s); //Testing code.
+		//System.out.println("out"+s); //Testing code.
 		pWriter.println(s);
 		pWriter.flush();
 	}

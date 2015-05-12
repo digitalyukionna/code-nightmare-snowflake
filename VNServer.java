@@ -6,9 +6,7 @@ import java.io.*;
 
 public class VNServer implements Runnable {
 	private boolean running = true;
-	private ArrayList<String> buffer = new ArrayList<String>();
 	private ArrayList<Connection> clients = new ArrayList<Connection>();
-	private ArrayList<Thread> threadList = new ArrayList<Thread>();
 	int connection = 0;
 	private ServerSocket sock;
 
@@ -27,19 +25,19 @@ public class VNServer implements Runnable {
 			System.exit(1);
 		}
 	}
-
-	public void execute(String s) {
-		switch (s) {
-		case "//quit":
-			running = false;
-			break;
-		}
-	}
-
+/*
+ * Sends the raw output to all connected clients.
+ */
 	public void output(String s) {
 		for (Connection c : clients) {
 			c.output(s);
 		}
+	}
+	/*
+	 * removes a connection from the list.
+	 */
+	public void endConnection(Connection conn){
+		clients.remove(conn);
 	}
 
 	public void run() {
@@ -52,9 +50,7 @@ public class VNServer implements Runnable {
 					clients.add((new Connection(this, sock.accept())));
 					System.out.println("Added a new connection!");
 					connection = clients.size() - 1;
-					threadList.add((clients.get(connection)));
-					threadList.get(connection).start();
-
+					clients.get(connection).start();
 				} catch (IOException e) {
 					// System.out.println("Failed to make a connection.");
 				}
